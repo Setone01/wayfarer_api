@@ -91,11 +91,6 @@ export const UserController = {
       return next(new ConflictError("Error creating user:", error));
     }
   },
-
-  //user can book a seat
-  async bookSeat(req: Request, res: Response, next: NextFunction) {
-    
-  }
 };
 
 export default UserController;

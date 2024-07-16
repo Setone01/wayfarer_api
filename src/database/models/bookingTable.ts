@@ -5,7 +5,8 @@ CREATE TABLE booking (
     id UUID PRIMARY KEY,
     trip_id UUID REFERENCES trip(id) ON DELETE CASCADE,
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    seat_number INTEGER NOT NULL,
+    booked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )`;
 
 export async function createBookingTable(): Promise<void> {
