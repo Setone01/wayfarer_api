@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { respond } from "src/utilities/respond.utility";
-import { Booking } from "src/interfaces";
-import pool from "src/config/database.config";
-import { sql } from "src/config/sql";
+import { respond } from "../utilities/respond.utility";
+import { Booking } from "../interfaces";
+import pool from "../config/database.config";
+import { sql } from "../config/sql";
 import HttpStatus from "http-status-codes";
-import { ConflictError } from "src/errors";
+import { ConflictError } from "../errors";
 
 export const BookingController = {
   async viewAllBookings(req: Request, res: Response, next: NextFunction) {

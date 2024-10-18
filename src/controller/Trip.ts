@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
-import pool from "src/config/database.config";
+import pool from "../config/database.config";
 import { ConflictError } from "../errors";
-import { sql } from "src/config/sql";
-import { respond } from "src/utilities/respond.utility";
-import { Booking, Trip } from "src/interfaces";
+import { sql } from "../config/sql";
+import { respond } from "../utilities/respond.utility";
+import { Booking, Trip } from "../interfaces";
 import HttpStatus from "http-status-codes";
 import moment from "moment";
 

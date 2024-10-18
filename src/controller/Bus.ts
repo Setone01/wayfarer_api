@@ -6,7 +6,7 @@ import HttpStatus from "http-status-codes";
 import respond from "../utilities/respond.utility";
 import { sql } from "../config/sql";
 import { Bus } from "../interfaces";
-import { JWT } from "src/utilities";
+import { JWT } from "../utilities";
 
 export const BusController = {
   //create register bus

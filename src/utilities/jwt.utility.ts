@@ -7,8 +7,8 @@ import { BadRequestError } from "../errors";
 dotenv.config();
 
 export class JWT {
-  private static secret: any =
-    variables.auth.jwtSecret || process.env.JWT_SECRET;
+  private static secret: string =
+    variables.auth.jwtSecret;
 
   public static encode<T>(
     payload: Partial<T>,

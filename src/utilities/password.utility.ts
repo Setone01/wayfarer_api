@@ -23,3 +23,8 @@ export const comparePassword = (
   password: string,
   hashPassword: string
 ): boolean => bcrypt.compareSync(password, hashPassword);
+
+
+//email validation
+export const isValidEmail = (email: string): boolean =>
+  /\S+@\S+\.\S+/.test(email);

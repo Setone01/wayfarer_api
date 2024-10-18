@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { sql } from "src/config/sql";
+import { sql } from "../config/sql";
 import HttpStatus from "http-status-codes";
-import { ConflictError } from "../errors";
-import { hashPassword } from "../utilities/password.utility";
+import { BadRequestError, ConflictError } from "../errors";
+import { hashPassword, isValidEmail } from "../utilities/password.utility";
 import respond from "../utilities/respond.utility";
-import { JWT } from "src/utilities";
-import pool from "src/config/database.config";
-import { User } from "src/interfaces";
+import { JWT } from "../utilities";
+import pool from "../config/database.config";
+import { User } from "../interfaces";
 import { compareSync } from "bcrypt";
 
 export const UserController = {
@@ -15,8 +15,12 @@ export const UserController = {
   async createUser(req: Request, res: Response, next: NextFunction) {
     const { first_name, last_name, email, password, role } = req.body;
 
-    if (!first_name || !last_name || !email || !password) {
-      return next(new ConflictError("Missing required fields"));
+    if (!first_name || !last_name || !email || !password || !role) {
+      return next(new BadRequestError("Missing required fields"));
+    }
+
+    if (!isValidEmail(email)) {
+      return next(new BadRequestError("Invalid email format"));
     }
 
     const params = [
@@ -32,7 +36,7 @@ export const UserController = {
       const userExist = await pool.query(sql.findSingleUser, [email]);
 
       if (userExist.rows.length > 0) {
-        return next(new ConflictError("User already exists"));
+        return next(new BadRequestError("User already exists"));
       }
 
       if (!["admin", "user"].includes(role)) {
@@ -45,7 +49,6 @@ export const UserController = {
         const token = JWT.encode({
           id: user.id,
           email: user.email,
-          role: user.role,
         });
         console.log("create user", token);
         return respond<User>(res, user, HttpStatus.CREATED, null, token);
@@ -63,8 +66,16 @@ export const UserController = {
   //user login
 
   async loginUser(req: Request, res: Response, next: NextFunction) {
-    const { email } = req.body;
+    const { email, password } = req.body;
     const params = [email];
+
+    if (!email || !isValidEmail(email)) {
+      return next(new BadRequestError("Missing or invalid"));
+    }
+
+    if (!password) {
+      return next(new BadRequestError("Password password"));
+    }
 
     try {
       const { rows } = await pool.query(sql.queryUserByEmail, params);
@@ -77,7 +88,6 @@ export const UserController = {
             const token = JWT.encode({
               id: user.id,
               email: user.email,
-              role: user.role,
             });
             console.log("log in", token);
             return respond<User>(res, user, HttpStatus.OK, null, token);
